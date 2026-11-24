@@ -1,0 +1,56 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Your signing key stays outside the repository: copy keystore.properties.example
+// to keystore.properties (git-ignored) and fill in your own values.
+def keystoreFile = rootProject.file('keystore.properties')
+def keystore = new Properties()
+if (keystoreFile.exists()) keystoreFile.withInputStream { keystore.load(it) }
+
+android {
+    namespace 'com.duotune'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.duotune'
+        minSdk 28
+        targetSdk 28          // kept low on purpose: no behaviour changes needed for a sideloaded tool
+        versionCode 19
+        versionName '0.7.0'
+        ndk { abiFilters 'arm64-v8a' }   // the Duo is arm64 only
+    }
+
+    signingConfigs {
+        release {
+            if (keystoreFile.exists()) {
+                storeFile file(keystore['storeFile'])
+                storePassword keystore['storePassword']
+                keyAlias keystore['keyAlias']
+                keyPassword keystore['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig keystoreFile.exists() ? signingConfigs.release : null
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // libpcctool.so is a small executable; it must be unpacked to disk so the root script can run it.
+    packagingOptions {
+        jniLibs { useLegacyPackaging true }
+    }
+
+    lint {
+        disable 'ExpiredTargetSdkVersion', 'OldTargetApi'
+        abortOnError false
+    }
+}
