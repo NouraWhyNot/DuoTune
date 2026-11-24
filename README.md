@@ -95,6 +95,14 @@ Open the project in Android Studio (it creates the Gradle wrapper if needed) and
 ```
 ANDROID_NDK_HOME=/path/to/ndk ./native/build.sh
 ```
+## AI disclosure
+
+DuoTune was built with the help of AI (Claude by Anthropic). Most of the code and documentation was written
+by the AI, directed and tested by me on my own Retroid Pocket Duo. Every version was installed and checked on
+real hardware before release, but the code has not had an independent review yet.
+
+The full source is in this repository (about 2,000 lines). If you know Android or C, a review is very welcome:
+please open an issue with anything that looks wrong.
 
 ## Licence
 
